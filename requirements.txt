@@ -8,3 +8,4 @@ ffmpeg
 Flask
 pytube
 gunicorn
+audioop-lts; python_version>='3.13'
