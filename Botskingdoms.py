@@ -1,19 +1,19 @@
-from flask import Flask, request, jsonify
-from pytube import YouTube
+import os
+import threading
+from flask import Flask
 
-app = Flask(__name__)
+# --- Flask keep-alive ---
+web = Flask(__name__)
 
-@app.route("/download", methods=["POST"])
-def download():
-    url = request.json.get("url")
-    yt = YouTube(url)
-    stream = yt.streams.get_highest_resolution()
-    path = stream.download()
-    return jsonify({"file": path}), 200
-
-@app.route("/")
+@web.get("/")
 def home():
-    return "YouTube Downloader API is running!"
+    return "OK"
 
+def run_web():
+    port = int(os.environ.get("PORT", "10000"))
+    web.run(host="0.0.0.0", port=port)
+
+# --- start both ---
 if __name__ == "__main__":
-    app.run()
+    threading.Thread(target=run_web, daemon=True).start()
+    app.run()   # <-- keep your existing Pyrogram Client variable name here
